@@ -1,7 +1,6 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import * as pngToIco from 'png-to-ico';
 
 const cwd = path.resolve(__dirname, '..');
 const sourceDir = path.resolve(cwd, 'src');
@@ -10,27 +9,6 @@ const outDir = path.resolve(cwd, 'dist');
 
 fsExtra.emptyDirSync(tempDir);
 fsExtra.emptyDirSync(outDir);
-
-//build the favicons in various sizes
-for (const width of [32, 128, 180, 192]) {
-    console.log(`favicon ${width}x${width}`);
-    doExport({
-        src: path.resolve(sourceDir, 'favicon.svg'),
-        dest: path.resolve(outDir, `favicon-${width}.png`),
-        transparent: false,
-        width: width
-    });
-}
-
-//create the basic favicon.ico file
-pngToIco(
-    path.resolve(outDir, 'favicon-192.png')
-).then(buf => {
-    fsExtra.writeFileSync(
-        path.resolve(outDir, 'favicon.ico'),
-        buf
-    );
-}).catch(console.error);
 
 for (let file of fsExtra.readdirSync(sourceDir)) {
     const src = path.resolve(sourceDir, file);
